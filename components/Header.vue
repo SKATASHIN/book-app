@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-navigation-drawer
+      <v-navigation-drawer
       v-model="drawer"
       fixed
       app
@@ -17,48 +17,61 @@
             <v-icon>{{ item.icon }}</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title>{{ item.title }}</v-list-item-title>
+            <v-list-item-title v-text="item.title" />
           </v-list-item-content>
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
-    <v-app-bar 
-        fixed 
-        app
+    <v-app-bar
     >
-      <v-app-bar-nav-icon 
-      @click.stop="drawer = !drawer" />
-      <v-toolbar-title>{{ title }}</v-toolbar-title>
+    <!-- 条件に応じて表示、非表示を切り替える。認証ができていたら表示する -->
+      <div v-show="isLoggedIn">
+        <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
+      </div>
+      <v-toolbar-title v-text="title" />
       <v-spacer />
     </v-app-bar>
+    {{ books }}
   </div>
 </template>
 
 <script>
 export default {
-    data(){
-        return {
-            drawer: false,
-                  items: [
-            {
-            icon: 'mdi-apps',
-            title: 'Welcome',
-            to: '/',
-            },
-
-            {
-            icon: 'mdi-chart-bubble',
-            title: 'Inspire',
-            to: '/inspire',
-            },
-
-        ],
-        title: 'BookApp',
-        }
+  props:{
+    books: {
+      type: Array,
+      default: null
     }
+  },
+  data(){
+    return {
+      drawer: false,
+       items: [
+        {
+          icon: 'mdi-apps',
+          title: 'Welcome',
+          to: '/'
+        },
+        {
+          icon: 'mdi-chart-bubble',
+          title: 'Inspire',
+          to: '/inspire'
+        },
+        {
+          title: 'Logout',
+          to: '/auth/logout'
+        }
+      ],
+      title: 'bookApp',
+    }
+  },
+  computed:{
+    isLoggedIn(){
+      return this.$store.getters['auth/getLoggedIn']
+    }
+  }
 }
 </script>
 
 <style>
-
 </style>
