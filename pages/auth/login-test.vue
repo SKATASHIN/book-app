@@ -32,6 +32,7 @@
 
 <script>
 // import { sign } from 'crypto';
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
 export default {
     data(){
         return{
@@ -41,11 +42,16 @@ export default {
     },
     methods: {
         login(){
-            /* vuexのアクションを指定していく(actionsの呼び出しのためdispatch) */
-            /* 流れ。->inputで入力した値がdataに入り、dispatchにてactionsに渡す流れ */
-            this.$store.dispatch('auth/login', {
-                email: this.email,
-                password: this.password,
+            /* 認証機能を使うことができるようにする */
+            const auth = getAuth(this.$firebase)
+            signInWithEmailAndPassword(auth, this.email, this.password)
+            /* 認証が成功した場合.thenで繋いで処理を記載、userCredentialマニュアルに合わせて書いている */
+            .then( userCredential => {
+                console.log( userCredential.user )
+                console.log('ログインOK')
+            })
+            .catch( e => {
+                alert(e.message)
             })
         }
     }
